@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="A four-page single-page application for testing Quantcast tags, GTM triggers and data-layer events.">
+  <title>Home · Quantcast SPA Lab</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23182134'/%3E%3Cpath d='M11 11h18v18H11z' fill='none' stroke='%23b9f660' stroke-width='3'/%3E%3Cpath d='m21 21 11 11' stroke='%23b9f660' stroke-width='3'/%3E%3C/svg%3E">
+  <script>
+    // The data layer exists before any custom tag or tag manager is loaded.
+    window.dataLayer = window.dataLayer || [];
+    // OPTIONAL SHARED DEFAULTS. Browser settings override these. Leave IDs blank for a clean lab.
+    window.SPA_LAB_DEFAULTS = {
+      mode: 'data',                 // 'data', 'gtm', or 'quantcast'
+      gtmId: '',                    // GTM-XXXXXXX
+      pcode: '',                    // Your TEST Quantcast p-code
+      router: 'history',            // 'history' uses ?page=products; 'hash' uses #/products
+      virtualPageviews: true,
+      directPageviews: 'all',       // 'all' or 'initial'
+      directActions: true,
+      purchaseLabel: '_fp.event.Purchase',
+      preventDuplicates: true
+    };
+  </script>
+  <!-- CUSTOM HEAD TAGS: paste your own CMP / tag / GTM snippet here if preferred.
+       Choose Data layer only in the app when supplying your own tags to avoid double installation.
+       dataLayer is ready above. Never reassign it to a new array.
+  -->
+  <style>
+    :root{color-scheme:light;--ink:#182134;--muted:#626b7e;--line:#dce1e9;--paper:#fff;--bg:#f1f4f8;--navy:#182134;--accent:#b9f660;--green:#316611;--blue:#2357c6;--radius:16px;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans)}button,input,select,textarea{font:inherit}button,a,input,select,textarea{touch-action:manipulation}button{cursor:pointer}button:disabled{cursor:default;opacity:.55}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:3px}a{color:var(--blue)}button{border:0}h1,h2,h3,p{margin:0}h1{font-size:clamp(1.7rem,2.4vw,2.3rem);line-height:1.15;letter-spacing:-.045em}h2{font-size:1.35rem;letter-spacing:-.025em}h3{font-size:1.05rem}code,pre,.mono{font-family:var(--mono)}code{font-size:.875em}small,.small{font-size:.875rem}.muted{color:var(--muted)}.eyebrow{text-transform:uppercase;font-size:.75rem;font-weight:750;letter-spacing:.12em}.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.between{justify-content:space-between}.stack{display:grid;gap:18px}.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;border:1px solid var(--line);border-radius:9px;padding:10px 15px;background:white;color:var(--ink);text-decoration:none;font-size:.875rem;font-weight:650;min-height:43px}.btn:hover{background:#edf1f6;border-color:#bdc6d5}.btn.primary{background:var(--navy);border-color:var(--navy);color:white}.btn.primary:hover{background:#2c3c5d}.btn.accent{background:var(--accent);border-color:var(--accent);color:#182134}.btn.accent:hover{background:#a7e54c}.btn.compact{padding:6px 10px;min-height:35px;font-size:.8125rem}.btn.ghost{background:transparent}.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#f6f8fb;border-radius:6px;padding:3px 8px;font-size:.75rem;font-weight:650;white-space:nowrap}.badge.green{color:var(--green);background:#edfade;border-color:#c8eaa0}.pill{border-radius:30px}.topbar{background:var(--navy);color:white;padding:19px 32px}.topbar .inner{max-width:1570px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;gap:13px;align-items:center}.brand-mark{display:grid;place-items:center;border:1.5px solid var(--accent);color:var(--accent);width:39px;height:39px;border-radius:9px;font-family:var(--mono);font-size:1.125rem;font-weight:700}.brand strong{font-size:1.1rem;letter-spacing:-.02em}.brand .small{color:#adb8cc;font-size:.75rem}.topbar .badge{background:#26334c;color:#dbe5f6;border-color:#43506b}.topbar .btn{border-color:#536078;color:#fff;background:transparent}.topbar .btn:hover{background:#2b3953}.shell{max-width:1634px;margin:auto;padding:25px 32px 32px}.intro{margin-bottom:20px}.intro h1{font-size:1.5rem;letter-spacing:-.035em}.intro p{font-size:.875rem;color:var(--muted);margin-top:4px}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:22px;align-items:start}.store{min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}.store-top{padding:17px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px}.store-title{font-weight:750;letter-spacing:.03em;font-size:.9rem}.store-title span{color:var(--muted);font-weight:450;margin-left:8px;font-size:.75rem;letter-spacing:0}.store-nav{display:flex;gap:5px;padding:13px 19px;background:#fbfcfe;border-bottom:1px solid var(--line);flex-wrap:wrap}.store-nav a{color:var(--muted);font-weight:600;font-size:.875rem;text-decoration:none;padding:8px 12px;border-radius:7px}.store-nav a:hover{background:#eef2f8}.store-nav a[aria-current=page]{color:var(--ink);background:#e8edf5}.routebar{padding:10px 24px;display:flex;gap:10px;align-items:center;font-size:.75rem;color:var(--muted);background:#fff;border-bottom:1px dashed var(--line);flex-wrap:wrap}.routebar code{color:var(--ink);font-size:.75rem;overflow-wrap:anywhere}.routebar .route-path{margin-right:auto}.page{padding:30px 28px;min-height:570px;outline:0}.page>div{animation:enter .16s ease-out}@keyframes enter{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}.page-heading{margin-bottom:26px}.page-heading p{margin-top:9px;color:var(--muted);max-width:550px}.home-hero{background:var(--navy);color:white;border-radius:12px;display:grid;grid-template-columns:1fr auto;gap:20px;padding:30px}.home-hero h2{font-size:clamp(1.7rem,2.7vw,2.65rem);line-height:1.13;letter-spacing:-.04em;max-width:430px;margin:13px 0}.home-hero p{color:#c1cadb;font-size:.9375rem;max-width:410px;margin-bottom:23px}.hero-index{align-self:start;font-family:var(--mono);font-size:.75rem;color:var(--accent);border:1px solid #526044;border-radius:6px;padding:6px 9px}.tiles{display:grid;grid-template-columns:1fr 1fr;gap:16px}.tile{padding:21px;border:1px solid var(--line);border-radius:11px}.tile p{color:var(--muted);font-size:.875rem;margin:8px 0 17px}.section-title{margin:28px 0 14px}.event-hint{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.75rem;color:var(--muted);margin-top:11px}.event-hint code{font-size:.75rem;background:#f0f3f8;padding:2px 5px;border-radius:4px}.home-hero .event-hint{color:#c1cadb}.home-hero .event-hint code{background:#2b3852;color:#c1cadb}.products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.product-card{border:1px solid var(--line);border-radius:11px;overflow:hidden;display:flex;flex-direction:column}.product-number{background:#eaf0f8;padding:26px 18px;display:flex;justify-content:space-between;align-items:end;min-height:114px}.product-number strong{font:500 2.9rem/1 var(--mono);letter-spacing:-.075em;color:#485f86}.product-number span{font: .6875rem var(--mono);color:#485f86}.product-card:nth-child(2) .product-number{background:#eff5e8}.product-card:nth-child(2) .product-number strong,.product-card:nth-child(2) .product-number span{color:#546d37}.product-card:nth-child(3) .product-number{background:#f1edf8}.product-card:nth-child(3) .product-number strong,.product-card:nth-child(3) .product-number span{color:#745595}.product-body{padding:17px;display:flex;flex-direction:column;gap:10px;flex:1}.product-body p{font-size:.875rem;color:var(--muted);flex:1}.product-body .price{font-size:1.1rem;font-weight:700}.product-body .btn{padding:9px}.product-detail{display:grid;grid-template-columns:1fr 1.15fr;gap:27px}.detail-spec{border:1px solid var(--line);background:#eef3fa;border-radius:12px;min-height:270px;padding:26px;display:flex;flex-direction:column;justify-content:space-between}.detail-spec .big-number{font:500 5rem/1 var(--mono);color:#51678c;letter-spacing:-.075em}.detail-spec h2{font-size:1.3rem}.detail-spec p{margin-top:7px;color:var(--muted);font-size:.875rem}.price-large{font-size:1.8rem;font-weight:750;letter-spacing:-.03em}.fields{display:grid;grid-template-columns:1fr 1fr;gap:17px}.field{display:flex;flex-direction:column;gap:7px;min-width:0}.field label,.field .label{font-size:.875rem;font-weight:650}.field input,.field select,.field textarea{width:100%;border:1px solid #c7cfdb;border-radius:7px;padding:10px 11px;color:var(--ink);background:#fff;min-height:44px}.field textarea{resize:vertical;font-family:var(--mono);font-size:.8125rem;line-height:1.55}.field small{font-size:.75rem;color:var(--muted)}.field.full{grid-column:1/-1}.field input:invalid:not(:placeholder-shown){box-shadow:none}.check{display:flex;align-items:flex-start;gap:9px;font-size:.875rem}.check input{accent-color:var(--navy);width:17px;height:17px;flex-shrink:0;margin:3px 0}.notice{padding:13px 15px;border-radius:8px;font-size:.875rem;background:#edf3fe;border:1px solid #d4e1fa;color:#2d4c80}.notice.good{background:#f0fae6;border-color:#d2e9b5;color:#305215}.notice.error{background:#fff0f0;border-color:#f2c3c3;color:#9c2525}.notice p+p{margin-top:6px}.checkout-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:24px}.summary{background:#f6f8fb;border:1px solid var(--line);border-radius:10px;padding:20px;align-self:start}.summary h3{margin-bottom:15px}.line-item{display:flex;gap:10px;justify-content:space-between;font-size:.875rem;border-bottom:1px solid var(--line);padding:12px 0}.line-item .remove{font-size:.75rem;color:var(--blue);padding:0;margin-top:4px;background:none;display:block}.summary .small{margin-top:14px}.total{display:flex;justify-content:space-between;gap:12px;margin-top:15px;font-weight:700}.summary code{overflow-wrap:anywhere}.help-box{border-top:1px solid var(--line);margin-top:27px;padding-top:19px;color:var(--muted);font-size:.875rem}.help-box summary{color:var(--ink);font-weight:650;cursor:pointer}.help-box p{margin-top:11px}.help-box pre{padding:16px;background:#f5f7fa;white-space:pre-wrap;font-size:.8125rem;overflow-wrap:anywhere}.lab-panel{min-width:0;position:sticky;top:18px;display:grid;gap:15px}.console{background:#141d2e;color:#e5ecf7;border:1px solid #283349;border-radius:var(--radius);overflow:hidden}.console-head{padding:19px 18px 13px}.console-head h2{font-size:1.06rem}.console-head p{color:#a7b4c9;font-size:.75rem;margin-top:5px}.console .btn{background:#263247;color:#e0e8f5;border-color:#44516a;font-size:.75rem;min-height:30px;padding:4px 8px}.console .btn:hover{background:#35425a}.log-tabs{display:flex;padding:0 10px 12px;gap:5px;flex-wrap:wrap}.log-tabs button{background:transparent;color:#a6b4ca;padding:6px 9px;border-radius:5px;font-size:.75rem}.log-tabs button[aria-pressed=true]{background:#344159;color:white}.log-list{height:214px;overflow:auto;border-top:1px solid #344058;border-bottom:1px solid #344058}.log-row{display:flex;align-items:center;gap:9px;text-align:left;background:transparent;color:#e0e9f6;border-bottom:1px solid #253047;padding:10px 14px;width:100%;font-family:var(--mono);font-size:.75rem}.log-row:hover{background:#25324a}.log-row[aria-pressed=true]{background:#2c3c55;box-shadow:inset 3px 0 var(--accent)}.log-row .seq{color:#7e90ac;min-width:27px;font-size:.6875rem}.log-row .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.log-row .kind{font-family:var(--sans);font-size:.6875rem;border:1px solid #475671;color:#c9d8ec;border-radius:4px;padding:1px 4px}.log-row.q .kind{border-color:#719550;color:#c5efa1}.log-empty{padding:28px 16px;color:#a7b4c9;font-size:.875rem}.payload-top{padding:12px 15px 0;font-size:.75rem;color:#a7b4c9}.payload{padding:13px 15px;margin:0;height:255px;overflow:auto;font-size:.75rem;line-height:1.6;white-space:pre-wrap;word-break:break-word;color:#c6ed99;tab-size:2}.console-foot{padding:10px 15px;border-top:1px solid #344058;color:#a7b4c9;font-size:.75rem}.panel-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}.panel-card h3{margin-bottom:13px}.panel-card details>summary{font-weight:650;font-size:.875rem;cursor:pointer}.panel-card details>.stack{margin-top:18px}.panel-card .field input,.panel-card .field textarea,.panel-card .field select{font-size:.8125rem;padding:8px 9px}.panel-card .field label{font-size:.8125rem}.panel-card .field small{font-size:.75rem}.panel-card .fields{gap:12px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:15px;font-size:.75rem;color:var(--muted)}.stats strong{display:block;margin-top:2px;font-family:var(--mono);font-size:.875rem;color:var(--ink);font-weight:550;overflow-wrap:anywhere}.status-line{font-size:.8125rem;padding-top:13px;margin-top:13px;border-top:1px solid var(--line)}.status-line .status-value{font-weight:650}.tiny-hint{font-size:.75rem;color:var(--muted);margin-top:9px}.footer{font-size:.75rem;color:var(--muted);padding-top:18px}.footer a{color:var(--muted)}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:12px 19px;border-radius:9px;background:#182134;color:white;box-shadow:0 8px 30px #10182b30;z-index:10;font-size:.875rem;max-width:calc(100vw - 32px);pointer-events:none}.toast[hidden]{display:none}dialog{border:1px solid var(--line);border-radius:16px;padding:0;width:min(690px,calc(100vw - 30px));max-height:90vh;box-shadow:0 25px 80px #111c3c40;color:var(--ink)}dialog::backdrop{background:#101a3290}.dialog-head{position:sticky;top:0;background:white;padding:23px 26px 17px;border-bottom:1px solid var(--line);z-index:1}.dialog-body{padding:24px 26px}.dialog-foot{position:sticky;bottom:0;background:white;padding:17px 26px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.settings-section{border-top:1px solid var(--line);padding-top:20px;margin-top:5px}.settings-section h3{margin-bottom:14px}.close{background:transparent;color:var(--muted);font-size:1.5rem;padding:0 6px;line-height:1.3}.visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.skip{position:absolute;top:-100px;left:20px;background:white;padding:10px;z-index:30}.skip:focus{top:10px}.no-js{padding:24px;background:#fff2e4}.live-msg{font-size:.875rem;margin-top:12px;min-height:0}.mobile-log-link{display:none}
+    [hidden]{display:none!important}
+    @media(min-width:1450px){.workspace{grid-template-columns:minmax(0,1fr) 440px}.page{padding:34px}}
+    @media(max-width:1150px){.workspace{grid-template-columns:minmax(0,1fr) 350px}.page{padding:24px 20px}.products{grid-template-columns:1fr}.product-card{display:grid;grid-template-columns:115px 1fr}.product-body{gap:5px}.product-body .btn{align-self:start}.product-number{padding:18px;flex-direction:column;align-items:start;justify-content:center;gap:14px}.checkout-grid{grid-template-columns:1fr}.home-hero{padding:24px}.hero-index{display:none}.product-detail{grid-template-columns:1fr}.detail-spec{min-height:175px;flex-direction:row;align-items:center;gap:20px}}
+    @media(max-width:880px){.workspace{grid-template-columns:1fr}.lab-panel{position:static;grid-template-columns:1fr 1fr}.console{grid-row:span 3}.topbar{padding:16px 20px}.shell{padding:22px 20px}.page{min-height:0}.products{grid-template-columns:repeat(3,minmax(0,1fr))}.product-card{display:flex}.product-number{flex-direction:row;align-items:end;justify-content:space-between}.checkout-grid{grid-template-columns:1.25fr 1fr}.product-detail{grid-template-columns:1fr 1.1fr}.detail-spec{flex-direction:column;align-items:start;min-height:280px}.mobile-log-link{display:inline-flex}}
+    @media(max-width:600px){.topbar .inner{align-items:start}.brand .small{max-width:170px}.topbar .row{gap:6px;justify-content:flex-end}.topbar .badge{display:none}.shell{padding:18px 12px}.intro h1{font-size:1.25rem}.intro p{font-size:.8125rem}.lab-panel{grid-template-columns:1fr}.topbar{padding:16px}.page{padding:24px 18px}.store-top{padding:15px 18px}.store-title span{display:none}.store-nav{padding:10px;gap:0}.store-nav a{padding:8px;font-size:.8125rem}.routebar{padding:10px 18px}.tiles,.fields,.checkout-grid,.product-detail{grid-template-columns:1fr}.fields .full{grid-column:auto}.products{grid-template-columns:1fr}.product-card{display:grid;grid-template-columns:100px 1fr}.product-number{padding:15px;flex-direction:column;align-items:start;justify-content:center;gap:15px}.detail-spec{min-height:165px;flex-direction:row;align-items:center}.home-hero{padding:22px}.home-hero h2{font-size:1.9rem}.dialog-head,.dialog-body,.dialog-foot{padding:19px}.page-heading{margin-bottom:22px}.brand strong{font-size:.96rem}.routebar .route-path{width:100%}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main-page">Skip to test page</a>
+  <noscript><div class="no-js">Enable JavaScript to use this SPA testing site.</div></noscript>
+  <header class="topbar"><div class="inner">
+    <div class="brand"><div class="brand-mark" aria-hidden="true">Q/</div><div><strong>Quantcast SPA Lab</strong><div class="small">An independent pixel testing sandbox</div></div></div>
+    <div class="row"><span class="badge" id="mode-badge">Data layer only</span><button class="btn compact" id="open-settings">Test setup</button></div>
+  </div></header>
+  <div class="shell">
+    <div class="intro row between"><div><h1>One document. Four pages. Every event.</h1><p>Move through the shop, trigger actions, and inspect the data layer as the URL changes.</p></div><a class="btn compact mobile-log-link" href="#event-console">Event log ↓</a></div>
+    <div class="workspace">
+      <section class="store" aria-label="Demo shop">
+        <div class="store-top"><div class="store-title">FIELDWORK <span>demo store</span></div><a class="btn compact" id="cart-link" data-route="checkout" href="?page=checkout">Cart <span class="badge" id="cart-count">0</span></a></div>
+        <nav class="store-nav" aria-label="Shop pages"><a id="nav-home" data-route="home" href="?page=home">01 Home</a><a id="nav-products" data-route="products" href="?page=products">02 Products</a><a id="nav-product" data-route="product" href="?page=product">03 Product detail</a><a id="nav-checkout" data-route="checkout" href="?page=checkout">04 Checkout</a></nav>
+        <div class="routebar"><span class="route-path">Virtual route <code id="route-path">/home</code></span><span class="badge green">SPA</span><span id="route-method">Initial load</span></div>
+        <main class="page" id="main-page" tabindex="-1"></main>
+      </section>
+      <aside class="lab-panel" aria-label="Testing tools">
+        <section class="console" id="event-console" aria-label="Event log">
+          <div class="console-head"><div class="row between"><h2>Event stream <span id="event-count" class="mono small">0</span></h2><div class="row" style="gap:6px"><button class="btn" id="export-log">Export</button><button class="btn" id="clear-log">Clear</button></div></div><p>Data-layer pushes, direct tag calls and observed resources.</p></div>
+          <div class="log-tabs" role="group" aria-label="Filter event stream"><button data-log-filter="all" aria-pressed="true">All</button><button data-log-filter="data" aria-pressed="false">dataLayer</button><button data-log-filter="quantcast" aria-pressed="false">Quantcast</button><button data-log-filter="resource" aria-pressed="false">Resources</button></div>
+          <div class="log-list" id="log-list" aria-label="Logged events"></div>
+          <div class="payload-top row between"><span id="payload-title">Select an event</span><button class="btn" id="copy-payload">Copy JSON</button></div><pre class="payload" id="payload">{}</pre>
+          <div class="console-foot">A logged push is not proof of pixel delivery.</div>
+        </section>
+        <section class="panel-card" aria-label="SPA status"><div class="stats"><div>Document ID<strong id="document-id"></strong></div><div>SPA navigations<strong id="navigation-count">0</strong></div><div>Routing<strong id="routing-status"></strong></div><div>Virtual pageviews<strong id="pageview-status"></strong></div></div><div class="status-line"><span class="muted">Tag status </span><span class="status-value" id="tag-status">No built-in tag</span></div><p class="tiny-hint">The document ID stays the same through SPA navigation and changes on a full reload.</p></section>
+        <section class="panel-card"><details><summary>Navigation experiments</summary><div class="stack"><div class="row"><button class="btn compact" id="history-back">← Back</button><button class="btn compact" id="history-forward">Forward →</button><button class="btn compact" id="full-reload">Full reload</button></div><div class="field"><label for="replace-target">Replace current history entry</label><select id="replace-target"><option value="home">Home</option><option value="products">Products</option><option value="product">Product detail</option><option value="checkout">Checkout</option></select></div><button class="btn compact" id="replace-route">Navigate with replaceState</button><p class="tiny-hint">Normal shop links use pushState. In hash mode they change the URL fragment. Settings control whether virtual page_view events are pushed.</p></div></details></section>
+        <section class="panel-card"><details id="custom-event-panel"><summary>Push a custom event</summary><form id="custom-event-form" class="stack"><div class="field"><label for="custom-name">Event name</label><input id="custom-name" value="demo_custom_event" required pattern="[A-Za-z][A-Za-z0-9_]*" maxlength="80"></div><div class="field"><label for="custom-label">Quantcast label</label><input id="custom-label" value="_fp.event.CustomTest" required maxlength="120"><small>Used by the direct bridge; available as quantcast_label in GTM.</small></div><div class="field"><label for="custom-json">Additional fields (JSON object)</label><textarea id="custom-json" rows="4">{
+  "test_variant": "A",
+  "interaction_type": "manual"
+}</textarea></div><button class="btn primary" type="submit">Push to dataLayer</button><div id="custom-error" class="live-msg" role="status"></div></form></details></section>
+      </aside>
+    </div>
+    <footer class="footer row between"><span>Static HTML · No build step · No backend · Dummy transactions only</span><span>v1.0.0 · <a href="https://help.quantcast.com/docs/inspect-your-tag" target="_blank" rel="noopener noreferrer">Quantcast tag inspection guide ↗</a></span></footer>
+  </div>
+  <dialog id="settings-dialog" aria-labelledby="settings-title"><form id="settings-form">
+    <div class="dialog-head row between"><div><h2 id="settings-title">Test setup</h2><p class="small muted">Settings are saved in this browser for this hosting path.</p></div><button type="button" class="close" id="close-settings" aria-label="Close settings">×</button></div>
+    <div class="dialog-body stack">
+      <div class="field"><label for="setting-mode">Implementation</label><select id="setting-mode"><option value="data">Data layer only / use my own snippet</option><option value="gtm">Google Tag Manager</option><option value="quantcast">Direct Quantcast JavaScript tag</option></select></div>
+      <div class="field" id="gtm-fields"><label for="setting-gtm">GTM container ID</label><input id="setting-gtm" placeholder="GTM-XXXXXXX" autocomplete="off" spellcheck="false"><small>The app loads this container once. Configure your Quantcast tags inside GTM.</small></div>
+      <div id="qc-fields" class="stack"><div class="field"><label for="setting-pcode">Quantcast test p-code</label><input id="setting-pcode" placeholder="p-xxxxxxxxxxxxx" autocomplete="off" spellcheck="false"><small>This loads quant.js and sends real events to the selected p-code. Use a test account.</small></div><div class="field"><label for="setting-direct-pageviews">Direct tag: pageview behaviour</label><select id="setting-direct-pageviews"><option value="all">Initial load + virtual pageviews</option><option value="initial">Initial load only</option></select></div><label class="check"><input id="setting-actions" type="checkbox">Forward labelled actions and purchases to Quantcast</label></div>
+      <div class="settings-section"><h3>SPA behaviour</h3><div class="stack"><div class="field"><label for="setting-router">URL style</label><select id="setting-router"><option value="history">History API: ?page=products</option><option value="hash">Hash: #/products</option></select><small>Both work in a subfolder without server rewrite rules. A change reloads the current page.</small></div><label class="check"><input id="setting-virtual" type="checkbox">Push page_view after SPA navigation</label><p class="small muted">Turn this off to test a GTM History Change trigger on its own. The initial page_view and spa_navigation diagnostic event still fire.</p></div></div>
+      <div class="settings-section"><h3>Purchase events</h3><div class="stack"><div class="field"><label for="setting-purchase-label">Quantcast purchase label</label><input id="setting-purchase-label" required maxlength="120" spellcheck="false"><small>For example: _fp.event.PurchaseConfirmation</small></div><label class="check"><input id="setting-dedupe" type="checkbox">Block repeated order IDs in this browser tab</label></div></div>
+      <div class="notice">There is no CMP in this package. Add your consent implementation in GTM or the marked HTML insertion point if that is part of your test. Currency is pushed to the data layer; the direct bridge sends the revenue number without conversion.</div>
+      <div id="settings-error" role="status" class="live-msg"></div>
+    </div>
+    <div class="dialog-foot"><button type="button" class="btn" id="reset-settings">Reset setup</button><button type="submit" class="btn primary">Save &amp; reload</button></div>
+  </form></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <!-- CUSTOM BODY TAGS: optional body snippet / noscript insertion point. -->
+  <script id="spa-lab-app">
+  (() => {
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const uuid = () => window.crypto?.randomUUID?.() || Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+    const documentId = uuid().slice(0,8);
+    const storageKey = 'quantcast-spa-lab:v1:' + location.pathname;
+    let memoryOrders = new Set();
+    const storageRead = (storage, key, fallback) => {try {const value = JSON.parse(window[storage].getItem(key));return value ?? fallback;} catch {return fallback;}};
+    const storageWrite = (storage, key, value) => {try {window[storage].setItem(key, JSON.stringify(value));return true;} catch {return false;}};
+    const baseline = {mode:'data',gtmId:'',pcode:'',router:'history',virtualPageviews:true,directPageviews:'all',directActions:true,purchaseLabel:'_fp.event.Purchase',preventDuplicates:true};
+    const cleanConfig = raw => ({
+      mode:['data','gtm','quantcast'].includes(raw.mode)?raw.mode:'data',
+      gtmId:typeof raw.gtmId==='string'?raw.gtmId.trim():'', pcode:typeof raw.pcode==='string'?raw.pcode.trim():'',
+      router:raw.router==='hash'?'hash':'history', virtualPageviews:raw.virtualPageviews!==false,
+      directPageviews:raw.directPageviews==='initial'?'initial':'all', directActions:raw.directActions!==false,
+      purchaseLabel:typeof raw.purchaseLabel==='string'&&/^_fp\.[\w. -]{1,115}$/.test(raw.purchaseLabel)?raw.purchaseLabel:'_fp.event.Purchase',
+      preventDuplicates:raw.preventDuplicates!==false
+    });
+    const config = cleanConfig({...baseline,...window.SPA_LAB_DEFAULTS,...storageRead('localStorage',storageKey+':config',{})});
+    const products = [
+      {id:'FW-001',name:'Everyday backpack',price:89,category:'Bags',description:'A simple 20L bag for the everyday commute.',variants:['Ink','Forest','Stone']},
+      {id:'FW-002',name:'Insulated bottle',price:29,category:'Accessories',description:'A 750ml steel bottle for workdays and weekends.',variants:['Ink','Moss','Chalk']},
+      {id:'FW-003',name:'Weekender duffel',price:129,category:'Bags',description:'Extra room for a short break or a longer day.',variants:['Ink','Olive','Stone']}
+    ];
+    const routes = ['home','products','product','checkout'];
+    const titles = {home:'Home',products:'Products',product:'Product detail',checkout:'Checkout'};
+    let current, navigationCount=0, previousLocation=document.referrer||'', cart=[], lastPurchase=null;
+    let checkoutDraft={order:generateOrderId(),revenue:'89.00',currency:'EUR',customer:'new'};
+    let log=[], sequence=0, selectedId=null, logFilter='all', renderLogPending=false, followLatest=true;
+    let qcReady=false, qcCalls=0, resourceObserver=null, toastTimer;
+    const labels={page_view:'PageView',view_item_list:'ViewCategory',view_item:'ViewContent',add_to_cart:'AddToCart',remove_from_cart:'RemoveFromCart',add_to_wishlist:'AddToWishlist',begin_checkout:'InitiateCheckout',generate_lead:'Lead',sign_up:'Register',cta_click:'CTAClick',select_item:'SelectItem',product_option_change:'ProductOption'};
+    function generateOrderId(){return 'TEST-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+uuid().replace(/-/g,'').slice(-7).toUpperCase();}
+    function money(value,currency='EUR'){return new Intl.NumberFormat('en-IE',{style:'currency',currency}).format(value);}
+    function itemFor(p,quantity=1,variant=p.variants[0]){return {item_id:p.id,item_name:p.name,item_category:p.category,item_variant:variant,price:p.price,quantity};}
+    function cartTotal(){return Math.round(cart.reduce((sum,item)=>sum+item.price*item.quantity,0)*100)/100;}
+    function showToast(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,3300);}
+    function setTagStatus(text){$('tag-status').textContent=text;}
+    function safeSnapshot(value){try{return JSON.parse(JSON.stringify(value,(_key,v)=>typeof v==='function'?'[function]':typeof v==='bigint'?String(v):v));}catch{return {note:'Could not serialize this entry'};}}
+    function record(kind,name,payload){const entry={id:++sequence,time:new Date().toISOString(),kind,name,payload:safeSnapshot(payload)};log.push(entry);if(log.length>300)log.shift();if(followLatest||!selectedId)selectedId=entry.id;scheduleLog();}
+    function scheduleLog(){if(renderLogPending)return;renderLogPending=true;requestAnimationFrame(()=>{renderLogPending=false;renderLog();});}
+    function renderLog(){
+      const visible=log.filter(e=>logFilter==='all'||e.kind===logFilter);
+      $('event-count').textContent=log.length;
+      $('log-list').innerHTML=visible.length?visible.slice().reverse().map(e=>`<button type="button" class="log-row ${e.kind==='quantcast'?'q':''}" data-log-id="${e.id}" aria-pressed="${e.id===selectedId}"><span class="seq">${String(e.id).padStart(3,'0')}</span><span class="name">${esc(e.name)}</span><span class="kind">${e.kind==='data'?'DL':e.kind==='quantcast'?'QC':e.kind==='resource'?'NET':'APP'}</span></button>`).join(''):'<div class="log-empty">No entries in this view yet.</div>';
+      const selected=log.find(e=>e.id===selectedId);
+      $('payload-title').textContent=selected?selected.name+' · '+selected.time.slice(11,23):'Select an event';
+      $('payload').textContent=selected?JSON.stringify(selected.payload,null,2):'{}';
+    }
+    // Observe rather than replace dataLayer. Chain the existing push, preserving GTM's processing and return value.
+    const observedLayer=window.dataLayer;
+    const previousPush=observedLayer.push;
+    observedLayer.push=function(...entries){
+      for(const entry of entries){const name=entry?.event||(entry?.[0]?String(entry[0]):'state reset');record('data',name,entry);}
+      return previousPush.apply(this,entries);
+    };
+    for(const entry of observedLayer.slice()){record('data',entry?.event||'existing entry',entry);}
+    function emit(name,fields={},options={}){
+      const label=options.label!==undefined?options.label:(name==='purchase'?config.purchaseLabel:labels[name]?'_fp.event.'+labels[name]:null);
+      // GTM's data model merges objects. Clear transaction/ecommerce fields before EVERY app event.
+      window.dataLayer.push({ecommerce:null,transactionId:null,transactionTotal:null,currency:null,customer_type:null,quantcast_label:null});
+      const payload={...fields,event:name,event_id:uuid(),event_timestamp:new Date().toISOString(),page_title:document.title,page_location:location.href,page_path:virtualPath(current),page_referrer:previousLocation,quantcast_label:label,lab:{document_id:documentId,navigation_id:navigationCount,route:current.route,source:options.source||'app',is_test:true}};
+      window.dataLayer.push(payload);
+      if(config.mode==='quantcast')forwardQuantcast(payload);
+      // Custom implementations can subscribe without monkey-patching the data layer.
+      window.dispatchEvent(new CustomEvent('spa-lab:event',{detail:safeSnapshot(payload)}));
+      return payload;
+    }
+    function forwardQuantcast(payload){
+      if(!qcReady||!payload.quantcast_label)return;
+      const isPage=payload.event==='page_view';
+      if(isPage&&config.directPageviews==='initial'&&payload.navigation_type!=='initial')return;
+      if(!isPage&&!config.directActions)return;
+      const args={qacct:config.pcode,labels:payload.quantcast_label};
+      if(qcCalls>0)args.event='refresh';
+      if(payload.event==='purchase'){
+        args.orderid=String(payload.transactionId);
+        args.revenue=Number(payload.transactionTotal).toFixed(2);
+        args.customer=payload.customer_type;
+      }
+      try{window._qevents.push(args);qcCalls++;record('quantcast',payload.event+' → _qevents.push',args);}catch(error){record('app','Quantcast push failed',{message:error.message,payload:args});setTagStatus('Quantcast push failed; inspect the log');}
+    }
+    function loadScript(src,onLoad,onError){const node=document.createElement('script');node.async=true;node.src=src;node.onload=onLoad;node.onerror=onError;document.head.append(node);}
+    function installTags(){
+      $('mode-badge').textContent={data:'Data layer only',gtm:'Google Tag Manager',quantcast:'Direct Quantcast'}[config.mode];
+      if(config.mode==='gtm'){
+        if(!/^GTM-[A-Z0-9]+$/.test(config.gtmId)){setTagStatus('Add a valid GTM ID in Test setup');return;}
+        window.dataLayer.push({'gtm.start':Date.now(),event:'gtm.js'});setTagStatus('Loading GTM…');
+        loadScript('https://www.googletagmanager.com/gtm.js?id='+encodeURIComponent(config.gtmId),()=>setTagStatus('GTM script loaded'),()=>setTagStatus('GTM blocked or failed to load'));
+      }else if(config.mode==='quantcast'){
+        if(!/^p-[A-Za-z0-9_-]{5,64}$/.test(config.pcode)){setTagStatus('Add a valid p-code in Test setup');return;}
+        window._qevents=window._qevents||[];qcReady=true;setTagStatus('Loading quant.js…');
+        loadScript('https://secure.quantserve.com/quant.js',()=>setTagStatus('quant.js loaded; verify pixel requests'),()=>setTagStatus('quant.js blocked or failed; calls may remain queued'));
+      }
+    }
+    function observeResources(){
+      if(!window.PerformanceObserver)return;
+      try{resourceObserver=new PerformanceObserver(list=>{for(const entry of list.getEntries()){
+        let url;try{url=new URL(entry.name);}catch{continue;}
+        if(!/(^|\.)(quantserve\.com|quantcast\.com|googletagmanager\.com)$/.test(url.hostname))continue;
+        record('resource',url.hostname+url.pathname,{url:entry.name,initiator:entry.initiatorType,duration_ms:Math.round(entry.duration),note:'Resource timing observation only. This does not confirm successful ingestion or attribution.'});
+      }});resourceObserver.observe({type:'resource',buffered:true});}catch{/* Resource Timing is optional. */}
+    }
+    function readRoute(){
+      const url=new URL(location.href);let route,item;
+      if(config.router==='hash'&&url.hash.startsWith('#/')){const [path,query='']=url.hash.slice(2).split('?');route=path;item=new URLSearchParams(query).get('item');}
+      else{route=url.searchParams.get('page')||'home';item=url.searchParams.get('item');}
+      return {route:routes.includes(route)?route:'home',item:products.some(p=>p.id===item)?item:'FW-001'};
+    }
+    function virtualPath(state){return state.route==='product'?'/products/'+state.item.toLowerCase():'/'+state.route;}
+    function routeURL(route,item=current?.item||'FW-001',router=config.router){
+      const url=new URL(location.href);url.searchParams.delete('page');url.searchParams.delete('item');
+      if(router==='hash'){url.hash='/'+route+(route==='product'?'?item='+encodeURIComponent(item):'');}
+      else{url.hash='';url.searchParams.set('page',route);if(route==='product')url.searchParams.set('item',item);}
+      return url;
+    }
+    function syncLinks(){document.querySelectorAll('[data-route]').forEach(a=>{a.href=routeURL(a.dataset.route,a.dataset.item||current.item).href;});}
+    function updateCartCount(){$('cart-count').textContent=cart.reduce((sum,item)=>sum+item.quantity,0);}
+    function renderPage(){
+      const p=products.find(p=>p.id===current.item);
+      document.title=(current.route==='product'?p.name:titles[current.route])+' · Quantcast SPA Lab';
+      document.querySelectorAll('.store-nav [data-route]').forEach(a=>{if(a.dataset.route===current.route)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+      $('main-page').innerHTML=({home:homePage,products:productsPage,product:productPage,checkout:checkoutPage}[current.route])();
+      $('route-path').textContent=virtualPath(current);$('navigation-count').textContent=navigationCount;updateCartCount();syncLinks();
+    }
+    function navigate(route,item=current.item,method='push'){
+      if(!routes.includes(route))throw new Error('Unknown route');
+      if(!products.some(p=>p.id===item))item='FW-001';
+      const next={route,item};
+      if(current.route===next.route&&(route!=='product'||current.item===next.item)){showToast('Already on this page; no new pageview.');return false;}
+      const from=location.href;const url=routeURL(route,item);
+      if(config.router==='hash'&&method==='push'){location.hash=url.hash;return true;}
+      current=next;navigationCount++;previousLocation=from;renderPage();
+      // Render and title update precede pushState so synchronous GTM History Change listeners see the new view.
+      history[method==='replace'?'replaceState':'pushState']({spaLab:true,route,item},'',url.href);
+      commitNavigation(method==='replace'?'replaceState':'pushState',from);return true;
+    }
+    function commitNavigation(method,from){
+      $('route-method').textContent=method;
+      emit('spa_navigation',{navigation_type:method,previous_page_location:from,new_page_location:location.href},{label:null});
+      if(config.virtualPageviews)emit('page_view',{navigation_type:method});
+      pageActionEvents();$('main-page').focus({preventScroll:true});
+    }
+    let lastKnownURL=location.href;
+    function browserNavigation(event){
+      const next=readRoute();
+      if(next.route===current.route&&(next.route!=='product'||next.item===current.item)){lastKnownURL=location.href;return;}
+      const from=lastKnownURL;previousLocation=from;current=next;navigationCount++;renderPage();
+      commitNavigation(event.type==='popstate'?'popstate':'hashchange',from);lastKnownURL=location.href;
+    }
+    window.addEventListener('popstate',browserNavigation);window.addEventListener('hashchange',browserNavigation);
+    window.addEventListener('spa-lab:event',e=>{if(e.detail.event==='spa_navigation')lastKnownURL=location.href;});
+    function pageActionEvents(){
+      if(current.route==='products')emit('view_item_list',{ecommerce:{item_list_id:'all-products',item_list_name:'All products',items:products.map((p,index)=>({...itemFor(p),index}))}});
+      if(current.route==='product'){const p=products.find(p=>p.id===current.item);emit('view_item',{ecommerce:{currency:'EUR',value:p.price,items:[itemFor(p)]}});}
+      if(current.route==='checkout')emit('begin_checkout',{ecommerce:{currency:checkoutDraft.currency,value:Number(checkoutDraft.revenue),items:purchaseItems(Number(checkoutDraft.revenue))}});
+    }
+    function hint(event){return `<div class="event-hint">Pushes <code>${event}</code></div>`;}
+    function homePage(){return `<div><div class="home-hero"><div><div class="eyebrow" style="color:#b9f660">Fieldwork essentials</div><h2>A little less clutter.<br>A little more everyday.</h2><p>Three products, a few choices, and a checkout. Explore the journey and watch each interaction appear in the event stream.</p><a id="hero-shop-cta" class="btn accent" data-route="products" data-cta="shop_collection" data-location="home_hero" href="?page=products">Shop the collection →</a>${hint('cta_click')}</div><span class="hero-index">TEST STORE / 01</span></div><h3 class="section-title">Try another interaction</h3><div class="tiles"><div class="tile"><span class="eyebrow muted">Lead generation</span><h3 style="margin-top:9px">Request a product guide</h3><p>Submit a dummy request with a topic. No personal details are needed.</p><form id="lead-form" class="stack"><div class="field"><label for="lead-topic">Interested in</label><select id="lead-topic"><option value="commuting">Commuting essentials</option><option value="travel">Weekend travel</option><option value="all">Everything</option></select></div><button id="request-guide" class="btn" type="submit">Request guide</button></form>${hint('generate_lead')}</div><div class="tile"><span class="eyebrow muted">Registration</span><h3 style="margin-top:9px">Join the demo club</h3><p>A one-click signup event for testing a second conversion type.</p><button id="demo-signup" class="btn" data-action="signup">Complete dummy signup</button>${hint('sign_up')}<p class="small muted" style="margin-top:22px">Nothing is emailed, created or charged.</p></div></div></div>`;}
+    function productsPage(){return `<div><div class="page-heading"><div class="eyebrow muted">02 / Collection</div><h1 style="margin-top:9px">Everyday essentials</h1><p>Select a product to change the route, or add it straight to your cart without navigating.</p>${hint('view_item_list on entry')}</div><div class="products">${products.map((p,index)=>`<article class="product-card"><div class="product-number"><strong>0${index+1}</strong><span>${p.id}</span></div><div class="product-body"><span class="eyebrow muted">${p.category}</span><h3>${p.name}</h3><p>${p.description}</p><div class="price">${money(p.price)}</div><a id="view-${p.id}" class="btn primary" data-route="product" data-item="${p.id}" data-select-item="${p.id}" href="?page=product&amp;item=${p.id}">View product</a><button id="quick-add-${p.id}" class="btn" data-action="quick-add" data-item="${p.id}">Quick add</button></div></article>`).join('')}</div><div class="help-box"><p>View product pushes <code>select_item</code>, then a virtual pageview and <code>view_item</code>. Quick add pushes <code>add_to_cart</code> without changing the URL.</p></div></div>`;}
+    function productPage(){const p=products.find(p=>p.id===current.item);return `<div><div class="page-heading"><div class="eyebrow muted">03 / Product detail</div><h1 style="margin-top:9px">${p.name}</h1><p>${p.description}</p>${hint('view_item on entry')}</div><div class="product-detail"><div class="detail-spec"><div><span class="eyebrow muted">${p.category}</span><div class="big-number" style="margin:18px 0">0${products.indexOf(p)+1}</div></div><div><h2>${p.name}</h2><p class="mono">${p.id} · Demo product</p></div></div><div class="stack"><div class="price-large">${money(p.price)}</div><form id="product-form" class="stack"><div class="fields"><div class="field"><label for="product-variant">Colour</label><select id="product-variant">${p.variants.map(v=>`<option>${v}</option>`).join('')}</select></div><div class="field"><label for="product-quantity">Quantity</label><input id="product-quantity" type="number" min="1" max="99" step="1" value="1" required></div></div><button id="add-to-cart" class="btn primary" type="submit">Add to cart</button></form><button id="add-to-wishlist" class="btn" data-action="wishlist">Save to wishlist</button><a id="product-checkout-cta" class="btn" data-route="checkout" data-cta="go_to_checkout" data-location="product_detail" href="?page=checkout">Go to checkout →</a></div></div><div class="help-box"><p>Colour and quantity changes push <code>product_option_change</code>. Cart and wishlist actions carry an <code>ecommerce.items</code> array.</p></div></div>`;}
+    function purchaseItems(value){return cart.length?cart.map(i=>({...i})):[{item_id:'MANUAL-TEST',item_name:'Manual test order',price:value,quantity:1}];}
+    function checkoutPage(){return `<div><div class="page-heading"><div class="eyebrow muted">04 / Checkout</div><h1 style="margin-top:9px">Build a test purchase</h1><p>Set your own revenue and order ID. Submit as many test orders as you need.</p>${hint('begin_checkout on entry · purchase on submit')}</div><div class="checkout-grid"><form id="purchase-form" class="stack"><div class="field"><label for="order-id">Order ID</label><div class="row" style="flex-wrap:nowrap"><input id="order-id" value="${esc(checkoutDraft.order)}" required maxlength="100" autocomplete="off" spellcheck="false"><button class="btn compact" id="new-order-id" type="button">New ID</button></div></div><div class="fields"><div class="field"><label for="purchase-revenue">Revenue</label><input id="purchase-revenue" type="number" value="${esc(checkoutDraft.revenue)}" min="0" max="999999999.99" step="0.01" required inputmode="decimal"></div><div class="field"><label for="purchase-currency">Currency</label><select id="purchase-currency">${['EUR','GBP','USD','CAD','AUD','JPY'].map(c=>`<option${checkoutDraft.currency===c?' selected':''}>${c}</option>`).join('')}</select></div></div><div class="field"><label for="purchase-customer">Customer type</label><select id="purchase-customer"><option value="new"${checkoutDraft.customer==='new'?' selected':''}>New customer</option><option value="returning"${checkoutDraft.customer==='returning'?' selected':''}>Returning customer</option></select></div><button id="complete-purchase" class="btn primary" type="submit">Complete dummy purchase</button><div id="purchase-result" role="status"></div>${lastPurchase?'<button id="replay-purchase" class="btn" type="button">Replay last purchase (intentional duplicate)</button>':''}<p class="small muted">${config.preventDuplicates?'Repeated order IDs are blocked in this tab. Use the explicit replay button to test duplicates.':'Duplicate order protection is off. Each submission pushes another purchase.'}</p></form><aside class="summary"><h3>Test order</h3>${cart.length?cart.map((item,index)=>`<div class="line-item"><div>${esc(item.item_name)}<br><span class="muted">${esc(item.item_variant)} × ${item.quantity}</span><button class="remove" data-action="remove-item" data-index="${index}">Remove</button></div><strong>${money(item.price*item.quantity)}</strong></div>`).join(''):'<p class="small muted">No cart items. A manual test item will be included automatically.</p>'}${cart.length?`<div class="total"><span>Cart total</span><span>${money(cartTotal())}</span></div><button id="use-cart-total" type="button" class="btn compact" style="margin-top:16px">Use cart total (EUR)</button>`:''}<p class="small muted">Your revenue field is the submitted total, even when it differs from this cart. Item prices stay in EUR; manual currency changes do not convert them.</p><div class="event-hint">Label <code>${esc(config.purchaseLabel)}</code></div></aside></div><details class="help-box"><summary>Data layer fields for GTM</summary><p>Use a Custom Event trigger named <code>purchase</code>. The Quantcast import defaults can read <code>transactionId</code> and <code>transactionTotal</code> directly.</p><pre>event: "purchase"
+transactionId: "TEST-..."
+transactionTotal: 89.00
+currency: "EUR"
+customer_type: "new"
+quantcast_label: "${esc(config.purchaseLabel)}"
+ecommerce.transaction_id: "TEST-..."
+ecommerce.value: 89.00
+ecommerce.currency: "EUR"
+ecommerce.items: [...]</pre><p>In GTM, choose one virtual pageview trigger strategy: <code>page_view</code> custom events or History Change. Enabling both on the same tag can produce duplicates.</p></details></div>`;}
+    function addToCart(p,quantity,variant){
+      const item=itemFor(p,quantity,variant);const existing=cart.find(i=>i.item_id===p.id&&i.item_variant===variant);
+      if(existing)existing.quantity+=quantity;else cart.push({...item});
+      checkoutDraft.revenue=cartTotal().toFixed(2);checkoutDraft.currency='EUR';updateCartCount();
+      emit('add_to_cart',{ecommerce:{currency:'EUR',value:p.price*quantity,items:[item]}});showToast(p.name+' added to cart.');
+    }
+    function submitPurchase({order,revenue,currency,customer},replay=false){
+      order=String(order).trim();const value=Number(revenue);
+      if(!order||order.length>100)throw new Error('Enter an order ID of 1–100 characters.');
+      if(String(revenue).trim()===''||!Number.isFinite(value)||value<0||value>999999999.99||Math.abs(value*100-Math.round(value*100))>0.00001)throw new Error('Enter a revenue amount of zero or more, with up to two decimals.');
+      if(!['EUR','GBP','USD','CAD','AUD','JPY'].includes(currency))throw new Error('Choose a supported currency.');
+      if(!['new','returning'].includes(customer))throw new Error('Choose a customer type.');
+      const stored=storageRead('sessionStorage',storageKey+':orders',[]);
+      const seen=new Set(Array.isArray(stored)?stored:[]);for(const id of memoryOrders)seen.add(id);
+      if(config.preventDuplicates&&!replay&&seen.has(order))throw new Error('Order '+order+' was already submitted in this tab. Generate a new ID or use Replay last purchase.');
+      const fields={transactionId:order,transactionTotal:value,currency,customer_type:customer,is_replay:replay,ecommerce:{transaction_id:order,value,currency,items:replay&&lastPurchase?safeSnapshot(lastPurchase.fields.ecommerce.items):purchaseItems(value)}};
+      const payload=emit('purchase',fields);seen.add(order);memoryOrders.add(order);storageWrite('sessionStorage',storageKey+':orders',[...seen]);
+      lastPurchase={order,revenue:value,currency,customer,fields:safeSnapshot(fields)};
+      return payload;
+    }
+    function purchaseFeedback(payload){
+      if(current.route!=='checkout')return;
+      $('purchase-result').innerHTML=`<div class="notice good"><strong>Purchase pushed to the data layer.</strong><p>${esc(payload.transactionId)} · ${money(payload.transactionTotal,payload.currency)}</p><p class="small">${payload.is_replay?'Intentional duplicate replay. ':''}Use the event stream and browser Network tab to check what your tags do next.</p></div>`;
+      if(!$('replay-purchase')){const button=document.createElement('button');button.type='button';button.id='replay-purchase';button.className='btn';button.textContent='Replay last purchase (intentional duplicate)';$('purchase-result').after(button);}
+    }
+    document.addEventListener('click',event=>{
+      const anchor=event.target.closest('a[href^="#"]');
+      if(anchor&&!anchor.dataset.route){const target=$(anchor.getAttribute('href').slice(1));if(target){event.preventDefault();target.scrollIntoView({block:'start'});if(target.id==='main-page')target.focus({preventScroll:true});return;}}
+      const a=event.target.closest('a[data-route]');
+      if(a){if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return;event.preventDefault();
+        if(a.dataset.cta)emit('cta_click',{cta_id:a.dataset.cta,cta_text:a.textContent.trim(),cta_location:a.dataset.location,destination:virtualPath({route:a.dataset.route,item:a.dataset.item||current.item})});
+        if(a.dataset.selectItem){const p=products.find(p=>p.id===a.dataset.selectItem);emit('select_item',{ecommerce:{item_list_id:'all-products',items:[itemFor(p)]}});}
+        navigate(a.dataset.route,a.dataset.item||current.item);return;
+      }
+      const action=event.target.closest('[data-action]');if(!action)return;
+      if(action.dataset.action==='quick-add'){const p=products.find(p=>p.id===action.dataset.item);addToCart(p,1,p.variants[0]);}
+      if(action.dataset.action==='wishlist'){const p=products.find(p=>p.id===current.item);emit('add_to_wishlist',{ecommerce:{currency:'EUR',value:p.price,items:[itemFor(p,1,$('product-variant').value)]}});showToast('Wishlist event pushed.');}
+      if(action.dataset.action==='signup'){emit('sign_up',{method:'demo_club',membership:'standard'});showToast('Dummy signup event pushed.');}
+      if(action.dataset.action==='remove-item'){const item=cart.splice(Number(action.dataset.index),1)[0];if(!item)return;emit('remove_from_cart',{ecommerce:{currency:'EUR',value:item.price*item.quantity,items:[item]}});renderPage();showToast('Item removed. Revenue field kept for testing.');}
+    });
+    document.addEventListener('submit',event=>{
+      if(event.target.id==='lead-form'){event.preventDefault();emit('generate_lead',{lead_type:'product_guide',interest:$('lead-topic').value});showToast('Dummy guide request pushed.');}
+      if(event.target.id==='product-form'){event.preventDefault();const quantity=Number($('product-quantity').value);if(!Number.isInteger(quantity)||quantity<1||quantity>99)return;addToCart(products.find(p=>p.id===current.item),quantity,$('product-variant').value);}
+      if(event.target.id==='purchase-form'){event.preventDefault();try{purchaseFeedback(submitPurchase(checkoutDraft));}catch(error){$('purchase-result').innerHTML=`<div class="notice error">${esc(error.message)}</div>`;}}
+    });
+    document.addEventListener('input',event=>{const map={'order-id':'order','purchase-revenue':'revenue','purchase-currency':'currency','purchase-customer':'customer'};if(map[event.target.id])checkoutDraft[map[event.target.id]]=event.target.value;});
+    document.addEventListener('change',event=>{
+      const map={'purchase-currency':'currency','purchase-customer':'customer'};if(map[event.target.id])checkoutDraft[map[event.target.id]]=event.target.value;
+      if(['product-variant','product-quantity'].includes(event.target.id))emit('product_option_change',{item_id:current.item,option_name:event.target.id==='product-variant'?'colour':'quantity',option_value:event.target.value});
+    });
+    document.addEventListener('click',event=>{
+      if(event.target.closest('#new-order-id')){checkoutDraft.order=generateOrderId();$('order-id').value=checkoutDraft.order;$('purchase-result').textContent='';}
+      if(event.target.closest('#use-cart-total')){checkoutDraft.revenue=cartTotal().toFixed(2);checkoutDraft.currency='EUR';$('purchase-revenue').value=checkoutDraft.revenue;$('purchase-currency').value='EUR';}
+      if(event.target.closest('#replay-purchase')&&lastPurchase){try{purchaseFeedback(submitPurchase(lastPurchase,true));}catch(error){showToast(error.message);}}
+    });
+    $('history-back').onclick=()=>history.back();$('history-forward').onclick=()=>history.forward();$('full-reload').onclick=()=>location.reload();
+    $('replace-route').onclick=()=>navigate($('replace-target').value,current.item,'replace');
+    document.querySelectorAll('[data-log-filter]').forEach(button=>button.onclick=()=>{logFilter=button.dataset.logFilter;document.querySelectorAll('[data-log-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));const latest=log.filter(e=>logFilter==='all'||e.kind===logFilter).at(-1);selectedId=latest?.id||null;followLatest=false;renderLog();});
+    $('log-list').onclick=event=>{const row=event.target.closest('[data-log-id]');if(row){selectedId=Number(row.dataset.logId);followLatest=false;renderLog();}};
+    $('clear-log').onclick=()=>{log=[];selectedId=null;followLatest=true;renderLog();showToast('Visible log cleared. The data layer is unchanged.');};
+    $('copy-payload').onclick=async()=>{try{await navigator.clipboard.writeText($('payload').textContent);showToast('JSON copied.');}catch{const range=document.createRange();range.selectNodeContents($('payload'));const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);showToast('JSON selected. Press Ctrl+C / Cmd+C to copy.');}};
+    $('export-log').onclick=()=>{const output={exported_at:new Date().toISOString(),app:'Quantcast SPA Lab',version:'1.0.0',document_id:documentId,settings:config,events:log};const url=URL.createObjectURL(new Blob([JSON.stringify(output,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='quantcast-spa-lab-'+Date.now()+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+    function parseCustom(json){
+      const fields=JSON.parse(json, (key,value)=>{if(['__proto__','prototype','constructor'].includes(key))throw new Error('Reserved object key: '+key);return value;});
+      if(!fields||Array.isArray(fields)||typeof fields!=='object')throw new Error('Use a JSON object, such as {"test_variant":"A"}.');
+      for(const key of ['event','event_id','event_timestamp','page_title','page_location','page_path','page_referrer','quantcast_label','lab'])if(Object.hasOwn(fields,key))throw new Error('Reserved field: '+key+'. Use the event name and label inputs.');
+      return fields;
+    }
+    $('custom-event-form').onsubmit=event=>{event.preventDefault();try{const name=$('custom-name').value.trim();if(!/^[A-Za-z][A-Za-z0-9_]{0,79}$/.test(name))throw new Error('Use an event name with letters, numbers and underscores.');if(name==='purchase')throw new Error('Use Checkout to create a purchase with validated revenue and order fields.');const label=$('custom-label').value.trim();if(!/^_fp\.[\w. -]{1,115}$/.test(label))throw new Error('Use a label beginning with _fp. and letters, numbers, spaces, dots, hyphens or underscores.');emit(name,parseCustom($('custom-json').value),{label,source:'manual'});$('custom-error').textContent='Event pushed.';showToast(name+' pushed.');}catch(error){$('custom-error').textContent=error.message;}};
+    function updateSettingsVisibility(){$('gtm-fields').hidden=$('setting-mode').value!=='gtm';$('qc-fields').hidden=$('setting-mode').value!=='quantcast';}
+    function fillSettings(c){$('setting-mode').value=c.mode;$('setting-gtm').value=c.gtmId;$('setting-pcode').value=c.pcode;$('setting-router').value=c.router;$('setting-virtual').checked=c.virtualPageviews;$('setting-direct-pageviews').value=c.directPageviews;$('setting-actions').checked=c.directActions;$('setting-purchase-label').value=c.purchaseLabel;$('setting-dedupe').checked=c.preventDuplicates;updateSettingsVisibility();}
+    $('open-settings').onclick=()=>{fillSettings(config);$('settings-error').textContent='';$('settings-dialog').showModal();};$('close-settings').onclick=()=>$('settings-dialog').close();$('setting-mode').onchange=updateSettingsVisibility;
+    $('reset-settings').onclick=()=>{fillSettings(cleanConfig(baseline));$('settings-error').textContent='Defaults restored in this form. Save & reload to apply.';};
+    $('settings-form').onsubmit=event=>{event.preventDefault();const raw={mode:$('setting-mode').value,gtmId:$('setting-gtm').value.trim().toUpperCase(),pcode:$('setting-pcode').value.trim(),router:$('setting-router').value,virtualPageviews:$('setting-virtual').checked,directPageviews:$('setting-direct-pageviews').value,directActions:$('setting-actions').checked,purchaseLabel:$('setting-purchase-label').value.trim(),preventDuplicates:$('setting-dedupe').checked};
+      let error='';if(raw.mode==='gtm'&&!/^GTM-[A-Z0-9]+$/.test(raw.gtmId))error='Enter a valid GTM container ID.';if(raw.mode==='quantcast'&&!/^p-[A-Za-z0-9_-]{5,64}$/.test(raw.pcode))error='Enter a valid Quantcast p-code.';if(!/^_fp\.[\w. -]{1,115}$/.test(raw.purchaseLabel))error='The purchase label must start with _fp. and use letters, numbers, spaces, dots, hyphens or underscores.';
+      if(error){$('settings-error').textContent=error;return;}
+      if(!storageWrite('localStorage',storageKey+':config',cleanConfig(raw))){$('settings-error').textContent='Browser storage is unavailable. Edit SPA_LAB_DEFAULTS in the HTML file instead.';return;}
+      history.replaceState({spaLab:true},'',routeURL(current.route,current.item,raw.router).href);location.reload();
+    };
+    // An optional read-only WebMCP tool. Nothing is registered on unsupported browsers.
+    if(document.modelContext?.registerTool){try{Promise.resolve(document.modelContext.registerTool({name:'read_spa_lab_state',title:'Read SPA lab state',description:'Read the current route and recent test events without firing tags or changing state.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:true},execute(input){if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length)throw new Error('Expected an empty object.');return {route:current.route,document_id:documentId,navigations:navigationCount,mode:config.mode,recent_events:log.slice(-15).map(e=>({kind:e.kind,name:e.name,payload:e.payload}))};}})).catch(()=>{});}catch{/* Optional browser capability. */}}
+    current=readRoute();renderPage();$('document-id').textContent=documentId;$('routing-status').textContent=config.router==='history'?'pushState / query':'Hash fragments';$('pageview-status').textContent=config.virtualPageviews?'On':'Off';
+    observeResources();installTags();emit('page_view',{navigation_type:'initial'});pageActionEvents();
+    // Read-only diagnostics for developer tools. All interaction still goes through the visible UI.
+    window.SPALab=Object.freeze({version:'1.0.0',getState:()=>safeSnapshot({route:current,documentId,navigationCount,config,cart,lastPurchase}),getLog:()=>safeSnapshot(log)});
+  })();
+  </script>
+</body>
+</html>
